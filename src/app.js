@@ -2,6 +2,17 @@ import MarkovChain from 'markovchain';
 import fs from 'fs';
 import _ from 'lodash';
 import WordPOS from 'wordpos';
+import Twit from 'twit';
+import TwitterBot from 'node-twitterbot';
+
+const { TwitterBot: NodeTwitterBot } = TwitterBot;
+
+const Bot = new NodeTwitterBot({
+ consumer_key: process.env.BOT_CONSUMER_KEY,
+ consumer_secret: process.env.BOT_CONSUMER_SECRET,
+ access_token: process.env.BOT_ACCESS_TOKEN,
+ access_token_secret: process.env.BOT_ACCESS_TOKEN_SECRET,
+});
 
 const wordpos = new WordPOS();
 
@@ -122,7 +133,7 @@ function makeTweet() {
     return `${ result }${ getRandomEmojiOption() } ${ makeHashTags(randomNumber(0, 3)) }`.trim();
   });
 
-  tweet.then((result) => result.length <= 137 ? console.log(result) : makeTweet());
+  tweet.then((result) => result.length <= 137 ? Bot.tweet(result) : makeTweet());
 }
 
 makeTweet();
